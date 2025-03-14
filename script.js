@@ -48,6 +48,7 @@ function dragEnd() {
   draggedCard = null;
   ["todo", "doing", "done"].forEach((columnId) => {
     updateTasksCount(columnId);
+    updateFromLocalStorage();
   });
 }
 
@@ -60,8 +61,36 @@ columns.forEach((col) => {
 function dragOver(event) {
   event.preventDefault();
   this.appendChild(draggedCard);
-  updateFromLocalStorage();
   console.log(draggedCard, "asdf");
+
+  const afterElement = getDragAfterElement(this, event.pageY);
+  if (afterElement === null) {
+    this.appendChild(draggedCard);
+  } else {
+    this.insertBefore(draggedCard, afterElement);
+  }
+}
+
+function getDragAfterElement(container, y) {
+  const draggableElements = [
+    ...container.querySelectorAll(".card:not(.dragging)"),
+  ];
+
+  const result = draggableElements.reduce(
+    (closestElementUnderMouse, currentTask) => {
+      const box = currentTask.getBoundingClientRect();
+      console.log(box);
+      const offset = y - box.top - box.height / 2;
+      console.log(offset);
+      if (offset < 0 && offset > closestElementUnderMouse.offset) {
+        return {offset: offset, element: currentTask};
+      } else {
+        return closestElementUnderMouse;
+      }
+    },
+    {offset: Number.NEGATIVE_INFINITY}
+  );
+  return result.element;
 }
 
 const contextmenu = document.querySelector(".context-menu");
@@ -78,11 +107,32 @@ document.addEventListener("click", () => {
 
 function editTask() {
   if (rightClickedCard !== null) {
-    const newTaskText = prompt("Edit task-", rightClickedCard.textContent);
+    const newTaskText = prompt("Edit task-");
+    const taskDate = new Date().toLocaleString();
+
     if (newTaskText !== "") {
-      rightClickedCard.textContent = newTaskText;
+      // rightClickedCard.textContent = newTaskText;
+      const taskElement = editTaskElement(newTaskText, taskDate);
+      rightClickedCard.replaceWith(taskElement);
     }
   }
+}
+
+function editTaskElement(taskText, taskDate) {
+  const element = document.createElement("div");
+  element.innerHTML = `<span> ${taskText}</span><br><small class="time">${taskDate}</small>`;
+  element.classList.add("card");
+  // element.draggable = true;
+  element.setAttribute("draggable", true);
+  element.addEventListener("dragstart", dragStart);
+  element.addEventListener("dragend", dragEnd);
+  element.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+    rightClickedCard = this;
+    showContextMenu(e.pageX, e.pageY);
+  });
+  const time = 213;
+  return element;
 }
 
 function deleteTask() {
