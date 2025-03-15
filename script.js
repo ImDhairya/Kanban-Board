@@ -1,6 +1,7 @@
 let draggedCard = null;
 let rightClickedCard = null;
-
+const popup = document.querySelector("#add-board-prompt");
+const overlay = document.querySelector("#overlay");
 document.addEventListener("DOMContentLoaded", loadTasksFromLocalStorage());
 
 function addTask(columnId) {
@@ -79,7 +80,7 @@ function getDragAfterElement(container, y) {
   const result = draggableElements.reduce(
     (closestElementUnderMouse, currentTask) => {
       const box = currentTask.getBoundingClientRect();
-      console.log(box);
+      console.log(box, "HOOOOO");
       const offset = y - box.top - box.height / 2;
       console.log(offset);
       if (offset < 0 && offset > closestElementUnderMouse.offset) {
@@ -179,3 +180,66 @@ function updateFromLocalStorage() {
     localStorage.setItem(columnId, JSON.stringify(tasks));
   });
 }
+
+function addBoard() {
+  const input = document.getElementById(`new-board-input`);
+  const board = document.querySelector(".board");
+  console.log(input.value, "FF")
+
+  const newBoard = document.createElement("div");
+  newBoard.setAttribute("id", input.value);
+  newBoard.classList.add("column");
+  newBoard.innerHTML = `
+    <h2>${input.value} (<span id="${input.value}-count">0</span>)
+    <button onclick="deleteBoard(${input.value})" id='del-btn'>Delete</button>
+    </h2>
+      <div
+        class="tasks"
+        id="${input.value}-task"></div>
+        <input
+          type="text"
+          class="task-input"
+          id="${input.value}-input"
+          placeholder="Add a Task"
+        />
+
+        <button
+          onclick="addTask('${input.value}')"
+          class="add-task"
+        >
+          Add Task
+        </button>
+  `;
+  input.value = "";
+
+  board.append(newBoard);
+  console.log(newBoard, "sdf");
+  popup.style.display = "none";
+  overlay.style.display = "none";
+  // newBoard.setAttribute('id', `${}`)
+
+  // referanceBoard.setAttribute("class", `${input.value}-board`);
+}
+
+function showAddBoardPopUp() {
+  popup.style.display = "block";
+  overlay.style.display = "block";
+
+  // --------------------------------------
+}
+
+function deleteBoard(boardId) {
+  console.log(boardId);
+  boardId.remove();
+}
+
+document.querySelector(".overlay").addEventListener("click", () => {
+  popup.style.display = "none";
+  overlay.style.display = "none";
+});
+
+// cursor,
+// windsurf,
+// claudcode,
+
+// learn and do intersection with some other descipline

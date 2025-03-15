@@ -85,6 +85,40 @@
       </div>
     </div>
 
+    <div
+      class="overlay"
+      id="overlay"
+    ></div>
+
+    <div
+      class="popup-board"
+      id="add-board-prompt"
+    >
+      <h3 id="add-board-heading">Add Your Board name</h3>
+      <input
+        id="new-board-input"
+        class="task-input"
+        type="text"
+        placeholder="Name of the board"
+      />
+      <span id="boardHint">-board</span>
+
+      <button
+        class="add-task"
+        id="add-board-button"
+        onclick="addBoard()"
+      >
+        Add Board
+      </button>
+    </div>
+    <button
+      onclick="showAddBoardPopUp()"
+      id="plus-btn"
+      class="plus-icon"
+    >
+      +
+    </button>
+
     <div class="context-menu">
       <ul>
         <li onclick="editTask()">Edit</li>
