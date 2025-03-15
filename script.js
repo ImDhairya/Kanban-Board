@@ -27,6 +27,7 @@ function createTaskElement(taskText, taskDate) {
   element.classList.add("card");
   // element.draggable = true;
   element.setAttribute("draggable", true);
+  element.style.wordBreak = "break-word";
   element.addEventListener("dragstart", dragStart);
   element.addEventListener("dragend", dragEnd);
   element.addEventListener("contextmenu", function (e) {
@@ -184,7 +185,7 @@ function updateFromLocalStorage() {
 function addBoard() {
   const input = document.getElementById(`new-board-input`);
   const board = document.querySelector(".board");
-  console.log(input.value, "FF")
+  console.log(input.value, "FF");
 
   const newBoard = document.createElement("div");
   newBoard.setAttribute("id", input.value);
@@ -216,6 +217,11 @@ function addBoard() {
   console.log(newBoard, "sdf");
   popup.style.display = "none";
   overlay.style.display = "none";
+  const columns = document.querySelectorAll(".column .tasks");
+
+  columns.forEach((col) => {
+    col.addEventListener("dragover", dragOver);
+  });
   // newBoard.setAttribute('id', `${}`)
 
   // referanceBoard.setAttribute("class", `${input.value}-board`);
@@ -242,4 +248,4 @@ document.querySelector(".overlay").addEventListener("click", () => {
 // windsurf,
 // claudcode,
 
-// learn and do intersection with some other descipline
+// learn and do intersection with some other desclipline,
